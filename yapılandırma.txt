@@ -1,0 +1,18 @@
+1- django constance yapısı hazırlanacak. ---> ok.
+2- celery alt yapısı hazırlanacak. ----> ok.
+3- config & enviroments ----> ok.
+4- SMTP ---> ok.
+5- Redis: Cache ---> ok.
+6- DB: postgres ---> ok
+7- broker - sentry - postgres - elastic, aws alt yapıların kurulması.  
+    -broker: Redis ---> ok. 
+    -Postgres: ---> ok.
+    -sentry: ----> ok.
+    -Elastic: ---> fail
+    -aws: ---> Ok. Alt yapı okey ama paralı olduğu için kullanmıyorum.
+
+8- docker + docker compose yapılandırması
+    - Dockerfile ---> ok.
+    - docker-compose ---> ok.
+
+9- Logging ---> ok.
