@@ -1,0 +1,36 @@
+# Core Packages
+django==5.1.2                 # Specific version of Django
+redis==5.2.0                  # Python client for Redis
+environs==11.0.0             # Environment variable management
+celery==5.4.0                 # Distributed task queue
+
+# Utility Libraries
+psycopg2-binary==2.9.10       # PostgreSQL database adapter
+python-magic==0.4.27          # File type detection library
+pathlib2==2.3.7.post1         # Object-oriented filesystem paths
+boto3==1.35.54                # AWS SDK for Python
+pillow==11.0.0                # Python Imaging Library (PIL fork)
+python-stdnum==1.20           # Standardized numeric data validation (e.g., IBAN, VAT, ISBN)
+python-dateutil==2.9.0.post0  # Utilities for manipulating dates and times
+ua-parser==0.18.0             # User agent string parsing library
+
+# API Frameworks and Data Validation
+djangorestframework==3.15.2           # Django REST framework
+djangorestframework-simplejwt==5.3.1  # JSON Web Token authentication for Django REST framework
+drf-yasg==1.21.8                      # Yet Another Swagger Generator for Django REST framework
+jsonschema==4.23.0                    # JSON Schema validation
+
+# Django Extensions
+django-constance==4.1.2               # Dynamic Django settings
+django-redis==5.4.0                   # Django cache backend for Redis
+django-sql-explorer==5.3              # SQL query explorer for Django
+django-autocomplete-light==3.11.0     # Autocomplete widget for Django forms
+django-celery-beat==2.7.0             # Django extension for managing periodic tasks with Celery
+django-filter                 # Dynamic filtering for Django REST framework
+django-cors-headers
+
+# Error Tracking
+sentry-sdk[django]==2.17.0
+
+# Git pre-commit hooks
+pre-commit==4.0.1

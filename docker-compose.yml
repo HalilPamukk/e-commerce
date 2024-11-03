@@ -1,0 +1,51 @@
+version: '3.11'
+
+services:
+  backend-app:
+      build: .
+      ports:
+        - "8000:8000"
+      volumes:
+        - .:/app/project/current/
+      command: >
+        sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      depends_on:
+        - db
+        - redis
+        - celery_worker
+      links:
+        - db
+        - redis
+        - celery_worker
+
+  db:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_USER: halilpamuk
+      POSTGRES_PASSWORD: 1qazxsw2
+      POSTGRES_DB: own_ecommerce_db
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: "redis:alpine"
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    depends_on:
+      - db
+    links:
+      - db
+
+
+  celery_worker: 
+    build: .
+    command: celery -A backend worker --loglevel=info
+    volumes:
+      - .:/app/project/current/
+    depends_on:
+      - redis
+    links:
+      - redis
+
