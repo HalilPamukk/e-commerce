@@ -1,0 +1,493 @@
+1- django constance yapısı hazırlanacak. ---> ok.
+2- celery alt yapısı hazırlanacak. ----> ok.
+3- config & enviroments ----> ok.
+4- SMTP ---> ok.
+5- Redis: Cache ---> ok.
+6- DB: postgres ---> ok
+7- broker - sentry - postgres - elastic, aws alt yapıların kurulması.  
+    -broker: Redis ---> ok. 
+    -Postgres: ---> ok.
+    -sentry: ----> ok.
+    -Elastic: ---> ok ---> Alt Yapı hazır ancak paralı olduğu için kullanmıyorum.
+    -aws: ---> ok ---> Alt yapı okey ama paralı olduğu için kullanmıyorum.
+
+8- docker + docker compose yapılandırması
+    - Dockerfile ---> ok.
+    - docker-compose ---> ok.
+
+9- Logging ---> ok.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------
+APPS:
+    - Account -> Hesap Yönetimi
+    - Address -> Adres Yönetimi
+    - Analytics -> Analiz Yönetimi
+        - UserBehavior -> Kullanıcı davranışları
+        - SalesAnalytics -> Satış analizleri
+        - ProductAnalytics -> Ürün performans analizleri
+        - MarketingAnalytics -> Pazarlama analizleri
+    - Api -> Api Yönetimi
+    - Basket -> Sepet Yönetimi
+    - Catalog -> Product Management
+    - Core -> Sistem Çekirdek Yapılandırmaları
+        - Settings -> Sistem ayarları
+        - Permissions -> İzin yönetimi
+        - Roles -> Rol yönetimi
+        - Logs -> Sistem logları
+    - Company -> Şirket Yönetimi
+    - Finance -> 
+        - Currency -> Para birimi yönetimi
+        - Bank -> Banka hesapları yönetimi
+        - Case -> Kasa yönetimi
+        - PaymentMethods -> Ödeme yöntemleri
+        - Transactions -> Finansal işlemler
+    - Gallery -> FileUpload
+    - Inventory -> Depo Yönetimi
+    - Invoice -> Fatura Yönetimi
+    - Notifications
+    - Orders -> Sipariş Yönetimi
+    - Payment -> Ödeme Yönetimi
+        - PaymentProviders -> Ödeme sağlayıcıları
+        - PaymentTransactions -> Ödeme işlemleri
+        - Refunds -> İade işlemleri
+        - PaymentMethods -> Ödeme yöntemleri
+    - Promotions -> Promosyon Yönetimi
+        - Campaigns -> Kampanyalar
+        - Coupons -> Kuponlar
+        - Discounts -> İndirimler
+        - BundleDeals -> Paket teklifleri
+        - Rewards -> Ödül programı
+    - Ratings -> Ürün Derecelendirme
+    - Comments -> Yorum Yönetimi
+
+--------------------------------------------------------------------------------------------------------------------------------------
+Modellemeler :
+
+
+Core :
+    CoreModel : 
+        - created_at 
+        - created_by
+        - updated_at 
+        - updated_by
+        - is_active
+        - is_deleted
+        - deleted_at
+        - deleted_by 
+        - data
+    
+    Language :
+        - name
+        - native_name
+        - flag
+        - iso639_1
+        - iso639_2
+        - is_system_language
+
+
+Address : 
+    Country : 
+        - name
+        - alpha2code
+        - alpha3code
+        - calling_code
+
+    Region :
+        - name
+        - code
+
+    City :
+        - name
+        - country -> FK
+        - code
+        - region -> FK
+
+    TownShip :
+        - name 
+        - code 
+        - city -> FK
+
+    district : 
+        - name
+        - township -> FK 
+
+    Address :
+        - id -> uuid 
+        - address title
+        - address -> textfield
+        - Address Desc. -> TextField
+        - country -> FK 
+        - city -> FK 
+        - township -> FK 
+        - District -> FK 
+        - Postal Code 
+
+
+Catalog :
+    - Category : 
+        - name
+        - Kod 
+        - slug
+        - sorting -> Sıralama Yapmak için.
+        - parent -> Alt alt'a kategori oluşturabilmek için. 
+        - meta_title
+        - meta_description
+
+    - Brand :
+        -  Name
+        -  Code
+        -  description
+        -  slug
+
+    ProductOptionKey :
+        - Key
+        - description
+        - is_variant_creator
+
+    ProductOptionValue :
+        - ProductOptionKey -> Fk 
+        - Value
+        - Sorting
+
+    - MainProduct :
+        - Name
+        - Code
+        - Barcode
+        - Brand
+        - Category
+        - description
+        - specifications
+        - meta_title
+        - meta_description
+        - slug
+
+    - ProductVariants : 
+        - Name
+        - Code
+        - Barcode
+        - main_product
+        - product_options
+        - slug
+
+    - ProductPrice :
+        - main_product
+        - variant
+        - price
+        - currency
+        - discount
+
+
+Account :
+    -Account : 
+        - id -> uuid 
+        - user -> auth.user
+        - phone 
+        - gender
+        - birthdate
+        - is_email_verified
+        - is_phone_verified 
+        - email_verified_at 
+        - Phone_verified_at
+        - Address -> address -> Address 
+
+
+Company :  ---> Kesin değil
+    - uuid
+    - legal name
+    - Tax No
+    - Tax office
+    - email 
+    - trade_registery_no
+    - mersis_no
+    - currency --> from finance
+    - default_language --> from core 
+    - country --> from address
+    - work_start_hour 
+    - work_end_hour
+    - company address --> from addres
+
+
+Basket:
+    Basket:
+        - uuid
+        - user -> Account FK (nullable, misafir kullanıcılar için)
+        - created_at
+        - updated_at
+        - status -> (active, merged, abandoned, converted)
+        - total_amount
+        - currency -> Finance.Currency FK
+        - is_guest_basket
+        
+    BasketItem:
+        - uuid
+        - basket -> Basket FK
+        - product_variant -> ProductVariant FK
+        - quantity
+        - unit_price
+        - total_price
+        - currency -> Finance.Currency FK
+        - created_at
+        - updated_at
+        - status
+
+
+Payment:
+    PaymentMethod:
+        - uuid
+        - name
+        - code
+        - description
+        - is_active
+        - provider -> PaymentProvider FK
+        - configuration
+        - commission_rate
+        - min_amount
+        - max_amount
+        
+    PaymentTransaction:
+        - uuid
+        - order -> Order FK
+        - payment_method -> PaymentMethod FK
+        - amount
+        - currency -> Finance.Currency FK
+        - status
+        - transaction_id
+        - provider_response
+        - created_at
+        - completed_at
+        - error_message
+        
+    PaymentRefund:
+        - uuid
+        - payment_transaction -> PaymentTransaction FK
+        - amount
+        - reason
+        - status
+        - refund_transaction_id
+        - created_at
+        - processed_at
+
+
+Promotions:
+    Campaign:
+        - uuid
+        - name
+        - description
+        - start_date
+        - end_date
+        - discount_type (percentage, fixed_amount)
+        - discount_value
+        - minimum_cart_amount
+        - usage_limit
+        - used_count
+        - is_active
+        
+    Coupon:
+        - uuid
+        - code
+        - campaign -> Campaign FK
+        - start_date
+        - end_date
+        - usage_limit_per_user
+        - total_usage_limit
+        - used_count
+        - is_active
+        
+    PromotionRule:
+        - uuid
+        - campaign -> Campaign FK
+        - rule_type
+        - conditions
+        - actions
+
+
+Orders 
+    order:
+        - uuid 
+        - user -> account fk 
+        - order_number 
+        - Status (pending, confirmed, processing, shipped, delivered, cancelled)
+        - total_amount
+        - subtotal 
+        - tax_amount
+        - shipping_amount 
+        - discount_amount
+        - currency -> Finance.Currency FK
+        - shipping_address -> Address FK
+        - billing_address -> Address FK
+        - payment_method -> Payment.PaymentMethod FK
+        - created_at
+        - updated_at
+        - estimated_delivery_date
+        - actual_delivery_date
+        - notes
+
+    orderItem :
+        - uuid
+        - order -> Order FK
+        - product_variant -> ProductVariant FK
+        - quantity
+        - unit_price
+        - total_price
+        - tax_rate
+        - tax_amount
+        - discount_amount
+        - status
+        - created_at
+        - updated_at
+
+
+Inventory :
+    Warehouse :
+        - uuid
+        - name
+        - code
+        - address -> Address FK
+        - phone
+        - email
+        - manager
+        - is_active
+        - storage_capacity
+        - current_capacity
+
+    Stock :
+        - uuid
+        - warehouse -> Warehouse FK
+        - product_variant -> ProductVariant FK
+        - quantity
+        - minimum_quantity
+        - maximum_quantity
+        - reserved_quantity
+        - available_quantity
+        - unit_cost
+        - last_count_date
+        - shelf_location
+
+    StockMovement
+        - uuid
+        - warehouse -> Warehouse FK
+        - product_variant -> ProductVariant FK
+        - movement_type (in, out, transfer, adjustment)
+        - quantity
+        - reference_number
+        - reference_type
+        - from_warehouse -> Warehouse FK (for transfers)
+        - to_warehouse -> Warehouse FK (for transfers)
+        - created_by
+        - created_at
+        - notes
+
+
+Analytics :
+    UserBehavior :
+        - uuid
+        - user -> Account FK
+        - event_type (page_view, product_view, add_to_cart, remove_from_cart, checkout)
+        - product -> Product FK
+        - category -> Category FK
+        - session_id
+        - ip_address
+        - user_agent
+        - referrer
+        - timestamp
+        - duration
+
+    SalesAnalytics
+        - uuid
+        - date
+        - product_variant -> ProductVariant FK
+        - category -> Category FK
+        - quantity_sold
+        - revenue
+        - cost
+        - profit
+        - average_order_value
+        - conversion_rate
+        - region -> Region FK
+
+
+Notification :
+    Notification :
+        - uuid
+        - user -> Account FK
+        - title
+        - message
+        - notification_type (order_status, promotion, system, stock)
+        - status (unread, read)
+        - related_object_type
+        - related_object_id
+        - created_at
+        - read_at
+        - expire_at
+
+    NotificationPreference : 
+        - uuid
+        - user -> Account FK
+        - notification_type
+        - email_enabled
+        - sms_enabled
+        - push_enabled
+
+
+Ratings & Comments  :
+    Rating :
+        -uuid
+        - user -> Account FK
+        - product -> Product FK
+        - score
+        - title
+        - review_text
+        - purchase_verified
+        - created_at
+        - updated_at
+        - status (pending, approved, rejected)
+        - helpful_votes
+        - report_count
+    
+    Comments : 
+        - uuid
+        - user -> Account FK
+        - product -> Product FK
+        - parent_comment -> Comment FK (for replies)
+        - content
+        - created_at
+        - updated_at
+        - status (pending, approved, rejected)
+        - helpful_votes
+        - report_count
+
+
+Finance :
+    Transaction :
+        - uuid
+        - transaction_type (sale, refund, payment, withdrawal)
+        - amount
+        - currency -> Currency FK
+        - status
+        - reference_type
+        - reference_id
+        - payment_method -> PaymentMethod FK
+        - created_at
+        - processed_at
+        - notes
+
+    Bank :
+        - uuid
+        - name
+        - code
+        - swift_code
+        - country -> Country FK
+        - is_active
+
+    BankAccount : 
+        - uuid
+        - bank -> Bank FK
+        - account_name
+        - account_number
+        - iban
+        - currency -> Currency FK
+        - is_default
+        - is_active
+        - branch_code
+        - branch_name

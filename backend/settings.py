@@ -60,7 +60,6 @@ INSTALLED_APPS = [
     'address', # Address management
     'analytics', # Analytics
     'basket', # Basket management
-    'buyer', # Buyer User management
     'catalog', # Product management
     'finance', # Finance management
     'inventory', # Inventory management
@@ -70,7 +69,6 @@ INSTALLED_APPS = [
     'payment', # Payment management
     'promotions', # Discount/voucher management
     'ratings', # Rating management
-    'seller', # Seller User management
 ]
 
 MIDDLEWARE = [
