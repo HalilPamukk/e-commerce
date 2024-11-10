@@ -6,9 +6,6 @@ env = Env()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
-
-############# ############### ############# ############### ############# ############### ############# ###############
-
 # SECURITY WARNING: keep the secret key used in production secret! 
 SECRET_KEY = env.str('SECRET_KEY')
 DEBUG = env.bool('DEBUG', default=True)

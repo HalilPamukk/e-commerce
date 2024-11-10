@@ -56,19 +56,19 @@ INSTALLED_APPS = [
     
     # Local apps
     'core', # Core app
-    'account', # User management
-    'address', # Address management
-    'analytics', # Analytics
-    'basket', # Basket management
-    'catalog', # Product management
-    'finance', # Finance management
-    'inventory', # Inventory management
-    'invoice', # Invoice management
-    'notifications', # Notification management
-    'orders', # Order management
-    'payment', # Payment management
-    'promotions', # Discount/voucher management
-    'ratings', # Rating management
+    #'account', # User management
+    #'address', # Address management
+    #'analytics', # Analytics
+    #'basket', # Basket management
+    #'catalog', # Product management
+    #'finance', # Finance management
+    #'inventory', # Inventory management
+    #'invoice', # Invoice management
+    #'notifications', # Notification management
+    #'orders', # Order management
+    #'payment', # Payment management
+    #'promotions', # Discount/voucher management
+    #'ratings', # Rating management
 ]
 
 MIDDLEWARE = [
@@ -277,3 +277,63 @@ AWS_ENDPOINT = f"s3.{AWS_S3_REGION}.amazonaws.com"
 AWS_S3_BUCKET_NAME = config.AWS_S3_BUCKET_NAME
 AWS_S3_CUSTOM_DOMAIN = f"https://{AWS_S3_BUCKET_NAME}.{AWS_ENDPOINT}"
 IMAGE_URL = config.IMAGE_URL
+
+# Rest framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ], # API uç noktalarına erişim yetkilendirmesini belirler.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ], # API uç noktalarına erişim izinlerini belirler.
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ], # Gelen verilerin nasıl işleneceğini belirler.
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination', # Sayfalama için kullanılır.
+    'PAGE_SIZE': 10, # Sayfalama için kullanılır.
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ], # Filtreleme ve sıralama için kullanılır.
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.SwaggerAutoSchema', # Otomatik API belgeleri için kullanılır. API uç noktalarının otomatik olarak belgelenmesini sağlar (ör. Swagger/OpenAPI).
+    
+    'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
+    'DATE_FORMAT': '%Y-%m-%d',
+    'TIME_FORMAT': '%H:%M:%S',
+    
+    # TODO: API throttling -> Secondary stage
+
+}
+
+# API DOCUMENTATION settings
+SWAGGER_SETTINGS = {
+    'DEFAULT_INFO': 'backend.urls.schema_view',  # Varsayılan şema bilgisi. (örn: `openapi.Info` bilgilerini içerir)
+    'SECURITY_DEFINITIONS': {  # Yetkilendirme bilgilerini ayarlar (örn: JWT token kullanımı için)
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': True,  # Session Authentication kullanımı
+    'LOGIN_URL': 'rest_framework:login',  # Login için URL
+    'LOGOUT_URL': 'rest_framework:logout',  # Logout için URL
+    'DOC_EXPANSION': 'none',  # Swagger'da doküman görünümü (none, list veya full)
+    'APIS_SORTER': 'alpha',  # API sıralama yöntemi (alpha veya method)
+    'OPERATIONS_SORTER': 'alpha',  # Operasyon sıralama yöntemi
+    'DEFAULT_MODEL_RENDERING': 'example',  # Model veri örneği (example veya schema)
+    'SHOW_REQUEST_HEADERS': True,  # Request header’larını gösterme
+    'VALIDATOR_URL': None,  # Swagger doğrulayıcı URL
+}
+
+
+REDOC_SETTINGS = {
+    'LAZY_RENDERING': True,  # Yalnızca görünümde olan API bölümlerini render eder, performansı artırır.
+    'PATH_IN_MIDDLE_PANEL': True,  # URL yolunu Redoc arayüzünde ortada gösterir.
+    'NATIVE_SCROLLBARS': False,  # Redoc'ta tarayıcının varsayılan kaydırma çubuklarını kullanır.
+    'EXPAND_RESPONSES': ['200', '201'],  # Belirtilen yanıt kodlarını varsayılan olarak genişletir.
+}
