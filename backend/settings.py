@@ -306,7 +306,6 @@ REST_FRAMEWORK = {
     'TIME_FORMAT': '%H:%M:%S',
     
     # TODO: API throttling -> Secondary stage
-
 }
 
 # API DOCUMENTATION settings
