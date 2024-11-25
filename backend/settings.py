@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     # Local apps
     'core', # Core app
     #'account', # User management
-    #'address', # Address management
+    'address', # Address management
     #'analytics', # Analytics
     #'basket', # Basket management
     #'catalog', # Product management

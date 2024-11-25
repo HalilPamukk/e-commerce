@@ -47,6 +47,10 @@ urlpatterns = [
     
     # API - AUTHENTICATION
     path("api-auth/", include("rest_framework.urls")),
+    
+    # API
+    path("api/", include("api.urls")),
+    
     # API - DOCUMENTATION
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

@@ -1,9 +1,15 @@
 import uuid
+import logging
+
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from core.models import CoreModel
+from django.contrib.auth.models import User
 
 # Create your models here.
+
+logger = logging.getLogger(__name__)
 
 class Region(CoreModel):
     CACHE_KEY = "region"
@@ -17,9 +23,23 @@ class Region(CoreModel):
 
     class Meta:
         ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'code'], name='unique_region')
+        ]
+        verbose_name = _("Region")
+        verbose_name_plural = _("Regions")
 
     def __str__(self):
         return f"{self.name} - ({self.code})"
+    
+    def clean(self):
+        """Model validation"""
+        if not (self.name or self.code):
+            raise ValidationError(_("Name and code are required fields."))
+        
+    def _json(self) -> dict:
+        """Returns the model data as a dictionary. """
+        return {self.__dict__}
     
 
 class Country(CoreModel):

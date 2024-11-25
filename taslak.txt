@@ -17,7 +17,12 @@
 
 9- Logging ---> ok.
 
-10- Rest Api Ayarları ve alt yapısı : 
+10- Rest Api Ayarları ve alt yapısı --> ok.
+
+11- Dökümantasyon ile akalı işlemler --> ok.
+
+12- Addres oluşturmak için gerekli api endpoint'lerini oluşturarak başlayalım.
+
 
 
 --------------------------------------------------------------------------------------------------------------------------------------
@@ -88,7 +93,7 @@ Core :
         - is_system_language
 
 
-Address : 
+Address : --> Model eklendi.
     Country : 
         - name
         - alpha2code
@@ -180,7 +185,7 @@ Catalog :
         - discount
 
 
-Account :
+Account : --> Model eklendi.
     -Account : 
         - id -> uuid 
         - user -> auth.user

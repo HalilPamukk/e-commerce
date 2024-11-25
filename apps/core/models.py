@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import JSONField
 from django.utils.translation import gettext_lazy as _
 from core.cache import BaseCache
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -127,5 +128,25 @@ class CoreModel(models.Model, BaseCache):
                     self.updated_by = user
 
         super().save(*args, **kwargs)
-
-        self.del_cache()
+        
+    def deactive(self, user:User):
+        from django.utils import timezone
+        self.is_active = False
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.deleted_by = user
+        self.save(user=user)
+        
+        return self
+    
+    
+    def activate(self, user:User):
+        from django.utils import timezone
+        self.is_active = True
+        self.is_deleted = False
+        self.deleted_at = None
+        self.deleted_by = None
+        self.updated_at = timezone.now()
+        self.updated_by = user
+        self.save(user=user)
+        
